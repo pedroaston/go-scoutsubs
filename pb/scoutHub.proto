@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+option go_package = "github.com/pedroaston/contentpubsub/pb";
+
+package contentpubsub.pb;
+
+service ScoutHub {
+
+    // ScoutSubs
+    rpc Subscribe(Subscription) returns (Ack) {}
+    rpc Publish(Event) returns (Ack) {}
+    rpc Notify(Event) returns (Ack) {}
+    rpc UpdateBackup(Update) returns (Ack) {}
+    rpc BackupRefresh(stream Update) returns (Ack) {}
+    rpc LogToTracker(EventLog) returns (Ack) {}
+    rpc AckToTracker(EventAck) returns (Ack) {}
+    rpc TrackerRefresh(RecruitTrackerMessage) returns (Ack) {}
+    rpc AckUp(EventAck) returns (Ack) {}
+    rpc AckOp(Ack) returns (Ack) {}
+    rpc HelpNewRv(Event) returns (Ack) {}
+
+    // FastDelivery
+    rpc AdvertiseGroup(AdvertRequest) returns (Ack) {}
+    rpc GroupSearchRequest(SearchRequest) returns (SearchReply) {}
+    rpc PremiumSubscribe(PremiumSubscription) returns (Ack) {}
+    rpc PremiumUnsubscribe(PremiumSubscription) returns (Ack) {}
+    rpc PremiumPublish(PremiumEvent) returns (Ack) {}
+    rpc RequestHelp(HelpRequest) returns (Ack) {}
+    rpc DelegateSubToHelper(DelegateSub) returns (Ack) {}
+
+}
+
+message Ack {
+    bool state = 1;
+    string info = 2;
+    string op = 3;
+}
+
+// ++++++++++++++ ScoutSubs message types ++++++++++++++
+
+message Subscription {
+    string peerID = 1;
+    string predicate = 2;
+    string rvId = 3;
+    string shortcut = 4;
+    map<int32, string> backups = 5;
+    string subAddr = 6;
+    string intAddr = 7;
+}
+
+message Event { 
+    EventID eventID = 1;
+    string predicate = 2;
+    string rvId = 3;
+    string event = 4;
+    string lastHop = 5;
+    string ackAddr = 6;
+    bool backup = 7;
+    string originalRoute = 8;
+    string birthTime = 9;
+    string pubAddr = 10;
+}
+
+message EventID {
+    string publisherID = 1;
+    int32 sessionNumber = 2;
+    int32 seqID = 3;
+}
+
+message Update {
+    string sender = 1;
+    string route = 2;
+    string routeAddr = 3;
+    string predicate = 4;
+    map<int32, string> backups = 5;
+}
+
+message RecruitTrackerMessage {
+    bool leader = 1;
+    string rvID = 2;
+    string rvAddr = 3;
+}
+
+message EventLog {
+    string rvID = 1;
+    EventID eventID = 2;
+    Event event = 3; 
+    map <string, bool> log = 4;
+    RecruitTrackerMessage recruitMessage = 5;
+}
+
+message RefreshTracker {
+    map <string, EventLog> logs = 1;
+}
+
+message EventAck {
+    string rvID = 1;
+    EventID eventID = 2;
+    string peerID = 3;
+    RecruitTrackerMessage recruitMessage = 4;
+}
+
+// +++++++++++++++++++ FastDelivery message types +++++++++++++++++++
+
+message AdvertRequest {
+    MulticastGroupID groupID = 1;
+    string rvId = 2;
+}
+
+message SearchRequest {
+    string predicate = 1;
+    string rvID = 2;
+}
+
+message SearchReply {
+    map<int32, MulticastGroupID> groups = 1;
+}
+
+message MulticastGroupID {
+    string ownerAddr = 1;
+    string predicate = 2;
+}
+
+message PremiumEvent {
+    MulticastGroupID groupID = 1;
+    string event = 2;
+    string eventPred = 3;
+    string birthTime = 4;
+}
+
+message PremiumSubscription {
+    string addr = 1;
+    int32 cap = 2;
+    string region = 3;
+    string ownPredicate = 4;
+    string pubPredicate = 5;
+}
+
+message HelpRequest {
+    MulticastGroupID groupID = 1;
+    map<int32, MinimalSubData> subs = 2;
+}
+
+message DelegateSub {
+    MulticastGroupID groupID = 1;
+    MinimalSubData sub = 2;
+}
+
+message MinimalSubData {
+    string predicate = 1;
+    string addr = 2;
+}
