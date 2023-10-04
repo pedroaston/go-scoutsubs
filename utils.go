@@ -16,7 +16,7 @@ func addrForPubSubServer(addrs []multiaddr.Multiaddr, addrOption bool) string {
 				dialAddr := fmt.Sprintf("%s:%s", aux[2], "31313")
 				return dialAddr
 			} else {
-				dialAddr := aux[2] + ":3" + aux[4][1:]
+				dialAddr := aux[2] + ":5" + aux[4][1:]
 				return dialAddr
 			}
 		}
