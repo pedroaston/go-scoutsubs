@@ -43,7 +43,7 @@ func TestSubAndUnsub(t *testing.T) {
 
 	// Initialize pub-subs
 	for i, dht := range dhts {
-		pubsubs[i] = NewPubSub(dht, DefaultConfig("PT", 10))
+		pubsubs[i] = NewPubSub(dht, DefaultConfig(false))
 		if pubsubs[i] == nil {
 			t.Fatal("failed to create a pubsub instance")
 		}
@@ -118,7 +118,7 @@ func TestPublish(t *testing.T) {
 
 	// Initialize pub-subs
 	for i, dht := range dhts {
-		pubsubs[i] = NewPubSub(dht, DefaultConfig("PT", 10))
+		pubsubs[i] = NewPubSub(dht, DefaultConfig(false))
 		if pubsubs[i] == nil {
 			t.Fatal("failed to create a pubsub instance")
 		}
@@ -196,7 +196,7 @@ func TestFaultTolerance(t *testing.T) {
 		}
 	}()
 
-	cfg := DefaultConfig("PT", 10)
+	cfg := DefaultConfig(false)
 	cfg.FaultToleranceFactor = 3
 	for i, dht := range dhts {
 		pubsubs[i] = NewPubSub(dht, cfg)
@@ -213,7 +213,7 @@ func TestFaultTolerance(t *testing.T) {
 	time.Sleep(time.Second)
 
 	pubsubs[helper[1]].MyPublish("valmitão tem as melhores marolas do mundo!", "portugal T")
-	time.Sleep(5 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// Confirm if subscribers received the event
 	var expected []string
@@ -272,7 +272,7 @@ func TestRedirectMechanism(t *testing.T) {
 
 	// Initialize pub-subs
 	for i, dht := range dhts {
-		pubsubs[i] = NewPubSub(dht, DefaultConfig("PT", 10))
+		pubsubs[i] = NewPubSub(dht, DefaultConfig(false))
 		pubsubs[i].SetHasOldPeer()
 	}
 
@@ -340,7 +340,7 @@ func TestRefreshing(t *testing.T) {
 	connect(t, ctx, dhts[helper[0]], dhts[helper[2]])
 
 	// Initialize pub-subs
-	cfg := DefaultConfig("PT", 10)
+	cfg := DefaultConfig(false)
 	cfg.SubRefreshRateMin = 5 * time.Second
 	for i, dht := range dhts {
 		pubsubs[i] = NewPubSub(dht, cfg)
@@ -426,7 +426,7 @@ func TestAcknowledgeChain(t *testing.T) {
 
 	// Initialize pub-subs
 	for i, dht := range dhts {
-		pubsubs[i] = NewPubSub(dht, DefaultConfig("PT", 10))
+		pubsubs[i] = NewPubSub(dht, DefaultConfig(false))
 		pubsubs[i].SetHasOldPeer()
 	}
 

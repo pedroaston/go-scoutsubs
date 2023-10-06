@@ -4,12 +4,6 @@ import "time"
 
 type SetupPubSub struct {
 
-	// Maximum number of subscribers the pubisher can have in a geographical region
-	MaxSubsPerRegion int
-
-	// # nodes of a region that are not delegated, to keep the most powerfull nodes recruitable for the future
-	PowerSubsPoolSize int
-
 	// Time resend operation if not acknowledge
 	OpResendRate time.Duration
 
@@ -28,30 +22,22 @@ type SetupPubSub struct {
 	// Time the publisher waits for rv ack until it resends event
 	TimeToCheckDelivery time.Duration
 
-	// Geographic region of the peer
-	Region string
-
-	// Number of peer he may help in FastDelivery
-	Capacity int
-
 	// True to activate redirect mechanism
 	RedirectMechanism bool
 
 	// True to activate the tracking mechanism and operation acknowledgement
 	ReliableMechanisms bool
 
-	// Should be true if we are running with our testground testbed
-	TestgroundReady bool
+	// Should be true if we are running in production or emulated testbed
+	ProductionReady bool
 
 	// timeout of each rpc
 	RPCTimeout time.Duration
 }
 
-func DefaultConfig(region string, cap int) *SetupPubSub {
+func DefaultConfig(production bool) *SetupPubSub {
 
 	cfg := &SetupPubSub{
-		MaxSubsPerRegion:           5,
-		PowerSubsPoolSize:          2,
 		OpResendRate:               10 * time.Second,
 		FaultToleranceFactor:       2,
 		ConcurrentProcessingFactor: 50,
@@ -59,11 +45,9 @@ func DefaultConfig(region string, cap int) *SetupPubSub {
 		SubRefreshRateMin:          15 * time.Minute,
 		TimeToCheckDelivery:        30 * time.Second,
 		RPCTimeout:                 10 * time.Second,
-		Region:                     region,
-		Capacity:                   cap,
 		RedirectMechanism:          true,
 		ReliableMechanisms:         true,
-		TestgroundReady:            false,
+		ProductionReady:            production,
 	}
 
 	return cfg

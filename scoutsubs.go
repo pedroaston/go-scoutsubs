@@ -24,14 +24,11 @@ import (
 
 // PubSub supports all the middleware logic
 type PubSub struct {
-	maxSubsPerRegion          int
-	powerSubsPoolSize         int
 	maxAttributesPerPredicate int
 	timeToCheckDelivery       time.Duration
 	opResendRate              time.Duration
 	rpcTimeout                time.Duration
 	faultToleranceFactor      int
-	region                    string
 	activeRedirect            bool
 	activeReliability         bool
 	addrOption                bool
@@ -81,21 +78,18 @@ type PubSub struct {
 
 func NewPubSub(dht *kaddht.IpfsDHT, cfg *SetupPubSub) *PubSub {
 
-	filterTable := NewFilterTable(dht, cfg.TestgroundReady)
-	auxFilterTable := NewFilterTable(dht, cfg.TestgroundReady)
+	filterTable := NewFilterTable(dht, cfg.ProductionReady)
+	auxFilterTable := NewFilterTable(dht, cfg.ProductionReady)
 	mySubs := NewRouteStats("no need")
 
 	ps := &PubSub{
-		maxSubsPerRegion:          cfg.MaxSubsPerRegion,
-		powerSubsPoolSize:         cfg.PowerSubsPoolSize,
 		maxAttributesPerPredicate: cfg.MaxAttributesPerPredicate,
 		timeToCheckDelivery:       cfg.TimeToCheckDelivery,
 		faultToleranceFactor:      cfg.FaultToleranceFactor,
 		opResendRate:              cfg.OpResendRate,
-		region:                    cfg.Region,
 		activeRedirect:            cfg.RedirectMechanism,
 		activeReliability:         cfg.ReliableMechanisms,
-		addrOption:                cfg.TestgroundReady,
+		addrOption:                cfg.ProductionReady,
 		rpcTimeout:                cfg.RPCTimeout,
 		currentFilterTable:        filterTable,
 		nextFilterTable:           auxFilterTable,

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p/core/peer"
 )
 
 // RouteStats keeps filters for each pubsub peer it is
